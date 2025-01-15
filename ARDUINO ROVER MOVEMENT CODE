@@ -102,3 +102,28 @@ void stopMotors() {
   digitalWrite(motorRightForward, LOW);
   digitalWrite(motorRightBackward, LOW);
 }
+// # Key Points of the Code:
+// Transmitter Code:
+// - Reads joystick values and button states.
+// - Sends commands as a comma-separated string to the receiver.
+
+// Receiver Code:
+// - Decodes the command string to control motor directions.
+// - Implements basic movement: forward, backward, left, right, and stop.
+
+// Hardware Connections:
+// Transmitter:
+// - Joystick X: Connect to A0.
+// - Joystick Y: Connect to A1.
+// - Button: Connect to pin 2.
+
+// Receiver:
+// - Motor Driver:
+//   - Left Motor: Pins 3 and 4.
+//   - Right Motor: Pins 5 and 6.
+
+// Steps:
+// 1. Upload the respective codes to the two Arduino boards.
+// 2. Ensure the transmitter and receiver are connected wirelessly (e.g., using an RF module or Bluetooth).
+// 3. Test the setup for smooth operation.
+
