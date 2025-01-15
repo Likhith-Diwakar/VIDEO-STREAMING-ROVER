@@ -1,0 +1,38 @@
+// Transmitter Code (Arduino UNO 1)
+#include <SoftwareSerial.h>
+
+// Define software serial pins for wireless communication
+SoftwareSerial mySerial(10, 11); // RX, TX pins
+
+// Pin assignments for the joystick and button
+const int joystickX = A0; // Joystick X-axis pin
+const int joystickY = A1; // Joystick Y-axis pin
+const int buttonPin = 2;  // Joystick button pin
+
+void setup() {
+  // Initialize the software serial communication
+  mySerial.begin(9600);   
+
+  // Set up the joystick and button pins
+  pinMode(joystickX, INPUT);        // Joystick X-axis as input
+  pinMode(joystickY, INPUT);        // Joystick Y-axis as input
+  pinMode(buttonPin, INPUT_PULLUP); // Button with internal pull-up resistor
+}
+
+void loop() {
+  // Read the X and Y values from the joystick
+  int xValue = analogRead(joystickX); // X-axis value (0 to 1023)
+  int yValue = analogRead(joystickY); // Y-axis value (0 to 1023)
+
+  // Read the button state (pressed or not)
+  int buttonState = digitalRead(buttonPin); // HIGH (not pressed) or LOW (pressed)
+
+  // Combine the readings into a command string
+  String command = String(xValue) + "," + String(yValue) + "," + String(buttonState);
+
+  // Send the command string over serial communication
+  mySerial.println(command);
+
+  // Add a small delay to stabilize the communication
+  delay(100); 
+}
