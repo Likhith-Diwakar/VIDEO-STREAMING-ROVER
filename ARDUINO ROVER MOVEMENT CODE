@@ -1,0 +1,103 @@
+// Transmitter Code (Arduino UNO 1)
+#include <SoftwareSerial.h>
+
+SoftwareSerial mySerial(10, 11); // RX, TX pins
+
+const int joystickX = A0;
+const int joystickY = A1;
+const int buttonPin = 2;
+
+void setup() {
+  mySerial.begin(9600);
+  pinMode(joystickX, INPUT);
+  pinMode(joystickY, INPUT);
+  pinMode(buttonPin, INPUT_PULLUP);
+}
+
+void loop() {
+  int xValue = analogRead(joystickX);
+  int yValue = analogRead(joystickY);
+  int buttonState = digitalRead(buttonPin);
+
+  String command = String(xValue) + "," + String(yValue) + "," + String(buttonState);
+  mySerial.println(command);
+
+  delay(100); // Small delay for stable communication
+}
+
+// Receiver Code (Arduino UNO 2)
+#include <SoftwareSerial.h>
+
+SoftwareSerial mySerial(10, 11); // RX, TX pins
+
+const int motorLeftForward = 3;
+const int motorLeftBackward = 4;
+const int motorRightForward = 5;
+const int motorRightBackward = 6;
+
+void setup() {
+  mySerial.begin(9600);
+  pinMode(motorLeftForward, OUTPUT);
+  pinMode(motorLeftBackward, OUTPUT);
+  pinMode(motorRightForward, OUTPUT);
+  pinMode(motorRightBackward, OUTPUT);
+}
+
+void loop() {
+  if (mySerial.available()) {
+    String data = mySerial.readStringUntil('\n');
+    processCommand(data);
+  }
+}
+
+void processCommand(String command) {
+  int xValue, yValue, buttonState;
+  sscanf(command.c_str(), "%d,%d,%d", &xValue, &yValue, &buttonState);
+
+  if (yValue > 600) {
+    moveForward();
+  } else if (yValue < 400) {
+    moveBackward();
+  } else if (xValue > 600) {
+    turnRight();
+  } else if (xValue < 400) {
+    turnLeft();
+  } else {
+    stopMotors();
+  }
+}
+
+void moveForward() {
+  digitalWrite(motorLeftForward, HIGH);
+  digitalWrite(motorLeftBackward, LOW);
+  digitalWrite(motorRightForward, HIGH);
+  digitalWrite(motorRightBackward, LOW);
+}
+
+void moveBackward() {
+  digitalWrite(motorLeftForward, LOW);
+  digitalWrite(motorLeftBackward, HIGH);
+  digitalWrite(motorRightForward, LOW);
+  digitalWrite(motorRightBackward, HIGH);
+}
+
+void turnLeft() {
+  digitalWrite(motorLeftForward, LOW);
+  digitalWrite(motorLeftBackward, HIGH);
+  digitalWrite(motorRightForward, HIGH);
+  digitalWrite(motorRightBackward, LOW);
+}
+
+void turnRight() {
+  digitalWrite(motorLeftForward, HIGH);
+  digitalWrite(motorLeftBackward, LOW);
+  digitalWrite(motorRightForward, LOW);
+  digitalWrite(motorRightBackward, HIGH);
+}
+
+void stopMotors() {
+  digitalWrite(motorLeftForward, LOW);
+  digitalWrite(motorLeftBackward, LOW);
+  digitalWrite(motorRightForward, LOW);
+  digitalWrite(motorRightBackward, LOW);
+}
