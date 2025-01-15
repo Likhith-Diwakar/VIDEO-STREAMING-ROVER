@@ -3,6 +3,7 @@
 
 SoftwareSerial mySerial(10, 11); // RX, TX pins
 
+
 const int joystickX = A0;
 const int joystickY = A1;
 const int buttonPin = 2;
